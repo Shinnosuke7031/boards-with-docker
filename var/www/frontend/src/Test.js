@@ -1,14 +1,35 @@
 import React, { useEffect } from 'react';
+import axios from 'axios';
 
-const test_api = 'http://localhost:8080/api/v1/users';
+const headers = {
+  "Content-type": "application/json",
+}
+const urlApi = 'http://localhost:8080/api/v1/';
+const time = new Date().toLocaleString();
+
+const testPosts = {
+  user_id: 'test1234', 
+  name: 'test man', 
+  comment: 'This is test.', 
+  isFile: false, 
+  time: time.replace(/\//g, '-'), 
+  fname: 'none', 
+  extension: 'none', 
+  raw_data: 'none' 
+}
 
 const Test = (props) => {
 
   useEffect(() => {
-    fetch(test_api)
-      .then(res => res.text())
-      .then(json => console.log(json))
-      .catch(err => console.error(err));
+    console.log(time.replace(/\//g, '-'))
+    
+    axios.post(urlApi + 'store', testPosts, {headers})
+    .then(res => console.log(res))
+    .catch(err => console.error(err));
+
+    // axios.get(urlApi + 'boards', {headers})
+    // .then(res => console.log(res))
+    // .catch(err => console.error(err));
   },[])
 
   return (
