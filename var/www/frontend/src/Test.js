@@ -21,11 +21,10 @@ const testPosts = {
 const Test = (props) => {
 
   useEffect(() => {
-    console.log(time.replace(/\//g, '-'))
     
-    axios.post(urlApi + 'store', testPosts, {headers})
-    .then(res => console.log(res))
-    .catch(err => console.error(err));
+    // axios.post(urlApi + 'store', testPosts, {headers})
+    // .then(res => console.log(res))
+    // .catch(err => console.error(err));
 
     // axios.get(urlApi + 'boards', {headers})
     // .then(res => console.log(res))
