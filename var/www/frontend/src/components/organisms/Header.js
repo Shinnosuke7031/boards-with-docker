@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,7 +33,7 @@ const Haeader = () => {
           <Typography variant="h6" className={classes.title}>
             簡易掲示板
           </Typography>
-          <Button color="inherit">ログイン</Button>
+          <Button color="inherit"> <Link to={'/'} style={{textDecoration: "none", color: "white"}}> ログイン </Link> </Button>
         </Toolbar>
       </AppBar>
     </div>
