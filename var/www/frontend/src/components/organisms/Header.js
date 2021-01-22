@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+import Button from '../UIparts/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import { SiteContext } from '../Routers';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,6 +23,15 @@ const useStyles = makeStyles((theme) => ({
 
 const Haeader = () => {
   const classes = useStyles();
+  const {state, dispatch} = useContext(SiteContext);
+
+  const handleClick = () => {
+    dispatch({
+      type: 'CHANGE_ISLOGIN',
+      payload: false
+    })
+    console.log(state)
+  }
 
   return (
     <div className={classes.root}>
@@ -31,9 +41,13 @@ const Haeader = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            簡易掲示板
+            <Link to='/' style={{textDecoration: "none", color: "white"}}>簡易掲示板</Link>
           </Typography>
-          <Button color="inherit"> <Link to={'/'} style={{textDecoration: "none", color: "white"}}> ログイン </Link> </Button>
+          {state.page === 'Board' ? 
+            <Button isLink={true} to={'/'} label='ログアウト' variant="text" color="inherit" onClick={handleClick} /> : 
+            // <Button isLink={true} to={'/'} label='ログアウト' variant="text" color="inherit" />: 
+            <Button isLink={true} to={'/'} label='ログイン' variant="text" color="inherit" />
+          }
         </Toolbar>
       </AppBar>
     </div>
