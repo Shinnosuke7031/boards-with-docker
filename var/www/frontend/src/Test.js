@@ -32,7 +32,7 @@ const Test = (props) => {
   },[])
 
   return (
-    <p>This is {props.test}</p>
+    <p>This is Test</p>
   );
 }
 

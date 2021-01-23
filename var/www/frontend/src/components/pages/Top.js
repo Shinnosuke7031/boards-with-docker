@@ -17,6 +17,7 @@ const Top = () => {
 
   const [userID, setUserID] = useState('');
   const [pass, setPass] = useState('');
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     dispatch({
@@ -29,17 +30,16 @@ const Top = () => {
   
 
   const loginClick = () => {
-    console.log('userID : '+userID);
-    console.log('pass : '+pass);
     axios.get(users_url)
     .then(res => res.data)
     .then(data => {
-      console.log(data)
-      console.log(login_check(data, userID, pass));
+      // console.log(data)
+      // console.log(login_check(data, userID, pass));
       return login_check(data, userID, pass);
     })
     .then(res => {
-      if (res['isLogin']) {
+
+      if (res['isLogin']) {// パスワード一致
         dispatch({
           type: 'CHANGE_NAME',
           payload: res['name']
@@ -48,10 +48,11 @@ const Top = () => {
           type: 'CHANGE_ISLOGIN',
           payload: true
         })
+      } else {// Alert Error
+        setIsError(true);
       }
     })
     .catch(err => console.error(err));
-    console.log('kokokokok')
   }
 
   return (
@@ -81,6 +82,7 @@ const Top = () => {
           {/* <Button isLink={true} to={'/boards'} label='ログイン' variant="contained" color="primary" onClick={()=>loginClick()} /> */}
         </div>    
       {/* </div> */}
+        {isError && <p className={styles.altError}>IDもしくはパスワードが間違っています</p>}
       </form>
 
       <p>新規登録は<Link to={'/signup'}>こちら</Link> </p>

@@ -37,6 +37,5 @@ module.exports = {
       '*': 'http://web'
     },
     open: true,
-    watchContentBase: true,
 	},
 };

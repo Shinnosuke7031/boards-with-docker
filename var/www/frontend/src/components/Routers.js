@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { Switch, Route, HashRouter as Router, Redirect } from 'react-router-dom';
+import { Switch, Route, BrowserRouter as Router, Redirect } from 'react-router-dom';
 
 import Header from './organisms/Header';
 import Auth from './Auth';
