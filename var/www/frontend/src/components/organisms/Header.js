@@ -3,9 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '../UIparts/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import Button from '../parts/Button';
 import { SiteContext } from '../Routers';
 import { Link } from 'react-router-dom';
 
@@ -13,12 +11,18 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
   title: {
     flexGrow: 1,
+    textAlign: 'center',
+    position: 'absolute',
+    top: '17px',
+    left: '45%'
   },
+  btn: {
+    position: 'absolute',
+    top: '17px',
+    right: 0
+  }
 }));
 
 const Haeader = () => {
@@ -29,25 +33,24 @@ const Haeader = () => {
     dispatch({
       type: 'CHANGE_ISLOGIN',
       payload: false
-    })
-    console.log(state)
-  }
+    });
+  };
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          {state.isLogin && <Typography variant="h10">ようこそ　{state.name} さん</Typography>}
+          <Typography variant="h5" className={classes.title}>
             <Link to='/' style={{textDecoration: "none", color: "white"}}>簡易掲示板</Link>
           </Typography>
-          {state.page === 'Board' ? 
-            <Button isLink={true} to={'/'} label='ログアウト' variant="text" color="inherit" onClick={handleClick} /> : 
-            // <Button isLink={true} to={'/'} label='ログアウト' variant="text" color="inherit" />: 
-            <Button isLink={true} to={'/'} label='ログイン' variant="text" color="inherit" />
-          }
+          <div className={classes.btn}>
+            {state.isLogin ? 
+              <Button isLink={true} to={'/'} label='ログアウト' variant="text" color="inherit" onClick={handleClick} /> : 
+              // <Button isLink={true} to={'/'} label='ログアウト' variant="text" color="inherit" />: 
+              <Button isLink={true} to={'/'} label='ログイン / 新規登録' variant="text" color="inherit" />
+            }
+          </div>
         </Toolbar>
       </AppBar>
     </div>

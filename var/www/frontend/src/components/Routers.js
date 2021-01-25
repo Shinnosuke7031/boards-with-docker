@@ -2,7 +2,6 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { Switch, Route, BrowserRouter as Router, Redirect } from 'react-router-dom';
 
 import Header from './organisms/Header';
-import Auth from './Auth';
 import Top from './pages/Top';
 import Board from './pages/Board';
 import styles from './index.module.css';

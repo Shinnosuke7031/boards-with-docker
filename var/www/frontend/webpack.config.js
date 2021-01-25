@@ -33,9 +33,10 @@ module.exports = {
 		contentBase: path.join(__dirname, 'dist'),
     port: 3000,
     host: '0.0.0.0',
-    proxy: {
-      '*': 'http://web'
-    },
+    hot: true,
     open: true,
+    publicPath: "/",
+    sockPath: '/app-socket',
+    historyApiFallback: true,
 	},
 };

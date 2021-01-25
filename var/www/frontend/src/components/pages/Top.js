@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
-import Button from '../UIparts/Button';
+import Button from '../parts/Button';
 import { SiteContext } from '../Routers';
 import styles from './index.module.css';
 import { Link } from 'react-router-dom';
@@ -24,7 +24,11 @@ const Top = () => {
       type: 'CHANGE_PAGE',
       payload: 'Top'
     })
-    console.log(state)
+
+    dispatch({
+      type: 'CHANGE_ISLOGIN',
+      payload: false
+    })
   }, []);
 
   
@@ -46,7 +50,7 @@ const Top = () => {
         })
         dispatch({
           type: 'CHANGE_ISLOGIN',
-          payload: true
+          payload: res['isLogin']
         })
       } else {// Alert Error
         setIsError(true);
@@ -84,6 +88,7 @@ const Top = () => {
       {/* </div> */}
         {isError && <p className={styles.altError}>IDもしくはパスワードが間違っています</p>}
       </form>
+
 
       <p>新規登録は<Link to={'/signup'}>こちら</Link> </p>
 
