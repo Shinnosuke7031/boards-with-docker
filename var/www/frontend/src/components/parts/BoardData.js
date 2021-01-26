@@ -42,19 +42,21 @@ const useStyles = makeStyles((theme) => ({
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 const urlBase = 'http://localhost:8080/api/v1/';
 
-const BoardData = () => {
+const BoardData = (props) => {
 
   const classes = useStyles();
+  const data = props.data;
 
-  const { data, error } = useSWR(urlBase + 'boards', fetcher);
-  if (error) return <div>failed to load</div>
-  if (!data) return <div>loading...</div>
+  // const { data, error } = useSWR(urlBase + 'boards', fetcher);
+  // if (error) return <div>failed to load</div>
+  // if (!data) return <div>loading...</div>
 
   return (
     <List className={classes.root}>
       <ul className={classes.ul}>
         {data.map((el, index) => (
           <ListItem key={index++}>
+            <input value={el.id} />
             <ListItemText className={classes.id} primary={index} />
             <ListItemText className={classes.name} primary={el.name} />
             <ListItemText className={classes.comment} primary={el.comment} />

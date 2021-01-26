@@ -32,7 +32,8 @@ const Routers = () => {
         </div>
       </Router>
     </SiteProvider>
-)};
+  )
+};
 
 // ================== Context API =================== //
 const initState = {
