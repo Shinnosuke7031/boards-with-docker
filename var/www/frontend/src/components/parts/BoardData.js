@@ -56,7 +56,7 @@ const BoardData = (props) => {
       <ul className={classes.ul}>
         {data.map((el, index) => (
           <ListItem key={index++}>
-            <input value={el.id} />
+            <input value={el.id} type='hidden' />
             <ListItemText className={classes.id} primary={index} />
             <ListItemText className={classes.name} primary={el.name} />
             <ListItemText className={classes.comment} primary={el.comment} />

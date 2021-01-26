@@ -10,21 +10,21 @@ class BoardsController extends Controller
 {
     
   public function index() {
-    // $users = DB::select('select * from posts');
-    // echo $users;
     $posts = Boards::all();
     return response()->json($posts);
   }
 
   public function showById($id) {
-    // $users = DB::select('select * from posts');
-    // echo $users;
     $posts = Boards::find($id);
     return response()->json($posts);
   }
 
   public function store (Request $request) {
     return response()->json(Boards::create($request->all()));
+  }
+
+  public function delete ($id) {
+    return Boards::where('id', $id)->delete();
   }
 
 

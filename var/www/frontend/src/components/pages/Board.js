@@ -14,8 +14,10 @@ const Board = () => {
 
   const [inputText, setInputText] = useState('');
   const [isEdit, setIsEdit] = useState(false);
-  const [count, setCount] = useState(0);
   const [data, setData] = useState([]);
+  const [delNumber, setDelNumber] = useState(0);
+  const [editNumber, setEditNumber] = useState(0);
+  const [editText, setEditText] = useState('');
 
   useEffect(() => {
     dispatch({
@@ -50,7 +52,7 @@ const Board = () => {
     }
 
     axios.post(urlBase + 'store', storeData)
-    .then(res => console.log(res))
+    // .then(res => console.log(res))
     .catch(err => console.error(err));
 
     setInputText('');
@@ -63,8 +65,75 @@ const Board = () => {
           console.error(err);
         })
     }, 2000)
+  }
 
+  const deleteID = () => {
 
+    const del_id = data.filter((el, index) => {
+      return Number(delNumber) === index+1
+    });
+
+    if (del_id[0].user_id === state.id) {
+
+      axios.post(urlBase + `delete/${del_id[0].id}`)
+      // .then(res => console.log(res))
+      .catch(err => console.error(err));
+      
+      setTimeout(()=>{// 少し時間置かないと更新されない
+        axios.get(urlBase + 'boards')
+          .then(res => setData(res.data))
+          .catch(err => {
+            setData([]);
+            console.error(err);
+          })
+      }, 2000)
+
+      alert('コメントを削除しました');
+
+    } else {
+      alert('このコメントは削除できません');
+    }
+
+    setDelNumber('');
+
+  }
+
+  const editID = () => {
+    const edit_id = data.filter((el, index) => {
+      return Number(editNumber) === index+1
+    });
+
+    if (edit_id[0].user_id === state.id) {
+
+      // axios.post(urlBase + `edit/${edit_id[0].id}`)
+      // // .then(res => console.log(res))
+      // .catch(err => console.error(err));
+      
+      // setTimeout(()=>{// 少し時間置かないと更新されない
+      //   axios.get(urlBase + 'boards')
+      //     .then(res => setData(res.data))
+      //     .catch(err => {
+      //       setData([]);
+      //       console.error(err);
+      //     })
+      // }, 2000)
+
+      alert('コメントを編集しました. 編集番号：' + edit_id[0].user_id);
+
+    } else {
+      alert('このコメントは編集できません');
+    }
+
+    setEditNumber('');
+  }
+
+  const updateData = () => {
+    axios.get(urlBase + 'boards')
+      .then(res => setData(res.data))
+      .catch(err => {
+        setData([]);
+        console.error(err);
+      })
   }
 
   return (
@@ -74,29 +143,63 @@ const Board = () => {
       <h1 className={styles.title}>掲示板</h1>
 
       <form className={styles.login_form} noValidate autoComplete="off">
-        <TextField 
-          id="standard-required" 
-          label="投稿内容" 
-          value={inputText}
-          onChange={event=>setInputText(event.target.value)
-          }/>
-        <div className={styles.store_btn}>
-          {isEdit ?
-            <Button isLink={false} label='更新' variant="contained" color="primary" onClick={()=>storeToBoard()} /> :
-            <Button isLink={false} label='投稿' variant="contained" color="primary" onClick={()=>storeToBoard()} />
-          }
-        </div> 
+        <div className={styles.text_and_btn}>
+          <TextField 
+            id="standard-required" 
+            label="投稿内容" 
+            value={inputText}
+            onChange={event=>setInputText(event.target.value)}
+          />
+          <div className={styles.store_btn}>
+            {isEdit ?
+              <Button isLink={false} label='更新' variant="contained" color="primary" onClick={()=>storeToBoard()} /> :
+              <Button isLink={false} label='投稿' variant="contained" color="primary" onClick={()=>storeToBoard()} />
+            }
+          </div>
+        </div>
+        <div className={styles.text_and_btn}>
+          <TextField
+            id="standard-number"
+            label="コメント番号"
+            type="number"
+            onChange={event=>setDelNumber(event.target.value)}
+          />
+          <div className={styles.store_btn}>
+            <Button isLink={false} label='削除' variant="contained" color="primary" onClick={()=>deleteID()} />  
+          </div>
+        </div>
       </form>
 
       <br />
 
-      {isEdit ?
-        <Button isLink={false} label='編集をやめる' variant="contained" color="primary" onClick={()=>handleEditMode()} /> :
-        <Button isLink={false} label='編集する' variant="contained" color="primary" onClick={()=>handleEditMode()} />
-      }      
+      <div className={styles.text_and_btn}>
+        {isEdit ?
+          <Button isLink={false} label='編集をやめる' variant="contained" color="primary" onClick={()=>handleEditMode()} /> :
+          <Button isLink={false} label='編集する' variant="contained" color="primary" onClick={()=>handleEditMode()} />
+        }
+        <p style={{width: '20px'}}></p>
+        <Button isLink={false} label='更新' variant="contained" color="primary" onClick={()=>updateData()} />
+      </div>
+
+      <div className={styles.text_and_btn}>
+        <TextField
+          id="standard-number"
+          label="コメント番号"
+          type="number"
+          onChange={event=>setEditNumber(event.target.value)}
+        />
+        <p style={{width: '20px'}}></p>
+        <TextField 
+          id="standard-required" 
+          label="編集内容" 
+          value={editText}
+          onChange={event=>setEditText(event.target.value)}
+        />
+        <p style={{width: '20px'}}></p>
+        <Button isLink={false} label='編集する' variant="contained" color="primary" onClick={()=>editID()} />
+      </div>
 
       <BoardData data={data} />
-
     </div> :
     <div className={`${styles.container}`}>
       <Link to='/'>こちら</Link>からログインしてください

@@ -49,3 +49,8 @@
   align-items: center;
   margin-top: 10px;
 }
+
+.text_and_btn {
+  display: flex;
+  align-items: center;
+}
