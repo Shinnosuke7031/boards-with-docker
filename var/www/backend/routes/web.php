@@ -27,6 +27,7 @@ $router->group(['prefix' => 'api/v1'], function() use ($router)
   $router->post('store', 'BoardsController@store');
   $router->post('delete/{id}', 'BoardsController@delete'); 
   $router->post('update', 'BoardsController@update'); 
+  $router->post('upload', 'BoardsController@upload'); 
   //ユーザー情報
   $router->get('users', 'BoardsController@users');
 });

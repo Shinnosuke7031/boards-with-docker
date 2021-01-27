@@ -11,12 +11,12 @@ class BoardsController extends Controller
     
   public function index() {
     $posts = Boards::all();
-    return response()->json($posts);
+    return response()->json($posts, 200, array('Content-Type'=>'application/json; charset=utf-8' ));
   }
 
   public function showById($id) {
     $posts = Boards::find($id);
-    return response()->json($posts);
+    return response()->json($posts, 200, array('Content-Type'=>'application/json; charset=utf-8' ));
   }
 
   public function store (Request $request) {
@@ -37,6 +37,25 @@ class BoardsController extends Controller
         'time'=>$time
       ]);
     return response()->json($res);
+  }
+
+  public function upload () {
+    /*
+      return response()->json(Boards::create(
+        [
+          'user_id' => $_POST["user_id"],
+          'name' => $_POST["name"],
+          'comment'=>'not text',
+          'isFile'=>$isFile,
+          'time'=>$time,
+          'fname'=>$_FILES["file"]["name"],
+          'extension'=>$extension,
+          'raw_data'=>$raw_data,
+        ]
+      ));
+    }*/
+    return response()->json(['file'=>$_FILES["file"], "user_id"=>$_POST["user_id"], "name"=>$_POST["name"]], 200, array('Content-Type'=>'application/json; charset=utf-8' ));
+
   }
 
 

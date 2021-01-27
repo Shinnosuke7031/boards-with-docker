@@ -6,6 +6,7 @@ import Button from '../parts/Button';
 import TextField from '@material-ui/core/TextField';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import firebase, { storage } from "../../../firebase/firebase";
 
 const urlBase = 'http://localhost:8080/api/v1/';
 
@@ -15,9 +16,12 @@ const Board = () => {
   const [inputText, setInputText] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [data, setData] = useState([]);
-  const [delNumber, setDelNumber] = useState(0);
-  const [editNumber, setEditNumber] = useState(0);
+  const [delNumber, setDelNumber] = useState('');
+  const [editNumber, setEditNumber] = useState('');
   const [editText, setEditText] = useState('');
+  const [isLoading, setIsLoading] = useState(null);
+  const [image, setImage] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     dispatch({
@@ -26,19 +30,50 @@ const Board = () => {
     })
 
     axios.get(urlBase + 'boards')
-      .then(res => setData(res.data))
+      .then(res => {setData(res.data); console.log(res)})
       .catch(err => {
         setData([]);
         console.error(err);
       })
   }, []);
 
-  const handleEditMode = () => {
-    setIsEdit(!isEdit);
-  }
+  useEffect(() => {
+    if (imageUrl !== "") {
+      const time = new Date().toLocaleString();
+      const storeData = {
+        user_id: state.id, 
+        name: state.name, 
+        comment: 'not text', 
+        isFile: true, 
+        time: time.replace(/\//g, '-'), 
+        fname: imageUrl, 
+        extension: 'none', 
+        raw_data: 'none' 
+      }
+      axios.post(urlBase + 'store', storeData)
+           .then(res=>{
+             setIsLoading(false);
+             console.log(res);
+             setImageUrl('');
+           })
+           .catch(err=>{
+             setIsLoading(false);
+             console.error(err);
+             setImageUrl('');
+           })
+
+       setTimeout(()=>{// 少し時間置かないと更新されない
+        axios.get(urlBase + 'boards')
+          .then(res => setData(res.data))
+          .catch(err => {
+            setData([]);
+            console.error(err);
+          })
+      }, 2000)
+    }
+  }, [imageUrl])
 
   const storeToBoard = () => {
-    // alert(`Your inputed text is ${inputText}, isEdit is ${isEdit}.`);
     const time = new Date().toLocaleString();
     const storeData = {
       user_id: state.id, 
@@ -113,7 +148,7 @@ const Board = () => {
     if (edit_id[0].user_id === state.id) {
 
       axios.post(urlBase + 'update', editData)
-        .then(res => console.log(res))
+        // .then(res => console.log(res))
         .catch(err => console.error(err));
       
       setTimeout(()=>{// 少し時間置かないと更新されない
@@ -144,6 +179,71 @@ const Board = () => {
       })
   }
 
+  const handleChangeFile = (event) => {
+    const imageFile = event.target.files[0];
+    setImage(imageFile);
+  }
+
+  const sendFile = () => {
+    setIsLoading(true);
+    if (image === "") {
+      console.log("ファイルが選択されていません");
+    } else {
+
+      // アップロード処理
+      const uploadTask = storage.ref(`/images/${image.name}`).put(image);
+      uploadTask.on(
+        firebase.storage.TaskEvent.STATE_CHANGED,
+        next,
+        error,
+        complete
+        );
+        
+      // axios
+      //   .post( 
+      //           urlBase + 'upload',
+      //           params,
+      //           {
+      //             headers: {
+      //               'content-type': 'multipart/form-data',
+      //             }
+      //           }
+      //         )
+      //   .then(res=>{
+      //     setIsLoading(false)
+      //     console.log(res)
+      //   })
+      //   .catch(err=>{
+      //     setIsLoading(false);
+      //     console.error(err);
+      //   })
+    }
+    setImage("");
+  }
+
+  const next = snapshot => {
+    // 進行中のsnapshotを得る
+    // アップロードの進行度を表示
+    const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log(percent + "% done");
+    console.log(snapshot);
+  };
+  const error = error => {
+    // エラーハンドリング
+    console.log(error);
+  };
+  const complete = () => {
+    // 完了後の処理
+    // 画像表示のため、アップロードした画像のURLを取得
+    storage
+      .ref("images")
+      .child(image.name)
+      .getDownloadURL()
+      .then(fireBaseUrl => {
+        setImageUrl(fireBaseUrl);
+      });
+  };
+
   return (
     state.isLogin ?
     <div className={`${styles.container} ${styles.container_board}`}>
@@ -170,6 +270,7 @@ const Board = () => {
             id="standard-number"
             label="コメント番号"
             type="number"
+            value={delNumber}
             onChange={event=>setDelNumber(event.target.value)}
           />
           <div className={styles.store_btn}>
@@ -179,15 +280,6 @@ const Board = () => {
       </form>
 
       <br />
-
-      <div className={styles.text_and_btn}>
-        {isEdit ?
-          <Button isLink={false} label='編集をやめる' variant="contained" color="primary" onClick={()=>handleEditMode()} /> :
-          <Button isLink={false} label='編集する' variant="contained" color="primary" onClick={()=>handleEditMode()} />
-        }
-        <p style={{width: '20px'}}></p>
-        <Button isLink={false} label='更新' variant="contained" color="primary" onClick={()=>updateData()} />
-      </div>
 
       <div className={styles.text_and_btn}>
         <TextField
@@ -205,6 +297,16 @@ const Board = () => {
         <p style={{width: '20px'}}></p>
         <Button isLink={false} label='編集する' variant="contained" color="primary" onClick={()=>editID()} />
       </div>
+
+      <div className={styles.text_and_btn}>
+        <Button isLink={false} label='更新' variant="contained" color="primary" onClick={()=>updateData()} />
+      </div>
+
+      <div>
+        <input type='file' accept="image/*" onChange={handleChangeFile} />
+        <Button isLink={false} label='アップロード' variant="contained" color="primary" onClick={()=>sendFile()} />
+      </div>
+
 
       <BoardData data={data} />
     </div> :

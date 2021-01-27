@@ -5,6 +5,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import ImgData from './ImgData';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,13 +56,22 @@ const BoardData = (props) => {
     <List className={classes.root}>
       <ul className={classes.ul}>
         {data.map((el, index) => (
-          <ListItem key={index++}>
-            <input value={el.id} type='hidden' />
-            <ListItemText className={classes.id} primary={index} />
-            <ListItemText className={classes.name} primary={el.name} />
-            <ListItemText className={classes.comment} primary={el.comment} />
-            <ListItemText className={classes.time} primary={el.time} />
-          </ListItem>
+            el.isFile === 0 ?
+            <ListItem key={index++}>
+              <input value={el.id} type='hidden' />
+              <ListItemText className={classes.id} primary={index} />
+              <ListItemText className={classes.name} primary={el.name} />
+              <ListItemText className={classes.comment} primary={el.comment} />
+              <ListItemText className={classes.time} primary={el.time} />
+            </ListItem> :
+            <ListItem key={index++}>
+              <input value={el.id} type='hidden' />
+              <ListItemText className={classes.id} primary={index} />
+              <ListItemText className={classes.name} primary={el.name} />
+              {/* <ListItemText className={classes.comment} primary={el.comment} /> */}
+              <img src={el.fname} width="40%" />
+              <ListItemText className={classes.time} primary={el.time} />
+            </ListItem>
         ))}
       </ul>
     </List>
