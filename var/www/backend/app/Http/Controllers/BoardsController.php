@@ -27,6 +27,18 @@ class BoardsController extends Controller
     return Boards::where('id', $id)->delete();
   }
 
+  public function update (Request $request) {
+    $id = $request->input('id');
+    $comment = $request->input('comment');
+    $time = $request->input('time');
+    $res = Boards::where('id', $id)
+      ->update([
+        'comment'=>$comment,
+        'time'=>$time
+      ]);
+    return response()->json($res);
+  }
+
 
   public function users() {
     $users = Users::all();

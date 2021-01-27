@@ -99,32 +99,40 @@ const Board = () => {
   }
 
   const editID = () => {
+    const time = new Date().toLocaleString();
     const edit_id = data.filter((el, index) => {
-      return Number(editNumber) === index+1
+      return Number(editNumber) === index+1;
     });
 
+    const editData = {
+      id: edit_id,
+      comment: editText,
+      time: time.replace(/\//g, '-'), 
+    };
+    
     if (edit_id[0].user_id === state.id) {
 
-      // axios.post(urlBase + `edit/${edit_id[0].id}`)
-      // // .then(res => console.log(res))
-      // .catch(err => console.error(err));
+      axios.post(urlBase + 'update', editData)
+        .then(res => console.log(res))
+        .catch(err => console.error(err));
       
-      // setTimeout(()=>{// 少し時間置かないと更新されない
-      //   axios.get(urlBase + 'boards')
-      //     .then(res => setData(res.data))
-      //     .catch(err => {
-      //       setData([]);
-      //       console.error(err);
-      //     })
-      // }, 2000)
+      setTimeout(()=>{// 少し時間置かないと更新されない
+        axios.get(urlBase + 'boards')
+          .then(res => setData(res.data))
+          .catch(err => {
+            setData([]);
+            console.error(err);
+          })
+      }, 2000)
 
-      alert('コメントを編集しました. 編集番号：' + edit_id[0].user_id);
+      alert('コメントを編集しました.');
 
     } else {
       alert('このコメントは編集できません');
     }
 
     setEditNumber('');
+    setEditText('');
   }
 
   const updateData = () => {
@@ -183,14 +191,13 @@ const Board = () => {
 
       <div className={styles.text_and_btn}>
         <TextField
-          id="standard-number"
           label="コメント番号"
           type="number"
+          value={editNumber}
           onChange={event=>setEditNumber(event.target.value)}
         />
         <p style={{width: '20px'}}></p>
         <TextField 
-          id="standard-required" 
           label="編集内容" 
           value={editText}
           onChange={event=>setEditText(event.target.value)}
