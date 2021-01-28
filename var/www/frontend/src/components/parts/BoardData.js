@@ -15,6 +15,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     overflow: 'auto',
     maxHeight: 500,
+    border: '1px solid #000000',
+    marginBottom: '30px'
   },
   listSection: {
     backgroundColor: 'inherit',
@@ -69,7 +71,8 @@ const BoardData = (props) => {
               <ListItemText className={classes.id} primary={index} />
               <ListItemText className={classes.name} primary={el.name} />
               {/* <ListItemText className={classes.comment} primary={el.comment} /> */}
-              <img src={el.fname} width="40%" />
+              {el.extension === 'img' &&  <img src={el.fname} width="40%" />}
+              {el.extension === 'video' &&  <video src={el.fname} width="40%" preload="none" autoPlay loop controls playsinline type="video/mp4" />}
               <ListItemText className={classes.time} primary={el.time} />
             </ListItem>
         ))}

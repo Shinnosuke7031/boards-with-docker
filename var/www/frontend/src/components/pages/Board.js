@@ -40,16 +40,20 @@ const Board = () => {
   useEffect(() => {
     if (imageUrl !== "") {
       const time = new Date().toLocaleString();
-      const storeData = {
+      let storeData = {
         user_id: state.id, 
         name: state.name, 
         comment: 'not text', 
         isFile: true, 
         time: time.replace(/\//g, '-'), 
         fname: imageUrl, 
-        extension: 'none', 
+        extension: 'img', 
         raw_data: 'none' 
       }
+      if (image.type === 'video/mp4') {
+        storeData['extension'] = 'video';
+      }
+      setImage("");
       axios.post(urlBase + 'store', storeData)
            .then(res=>{
              setIsLoading(false);
@@ -62,7 +66,7 @@ const Board = () => {
              setImageUrl('');
            })
 
-       setTimeout(()=>{// 少し時間置かないと更新されない
+      setTimeout(()=>{// 少し時間置かないと更新されない
         axios.get(urlBase + 'boards')
           .then(res => setData(res.data))
           .catch(err => {
@@ -71,6 +75,7 @@ const Board = () => {
           })
       }, 2000)
     }
+    
   }, [imageUrl])
 
   const storeToBoard = () => {
@@ -103,6 +108,8 @@ const Board = () => {
   }
 
   const deleteID = () => {
+
+    console.log(delNumber)
 
     const del_id = data.filter((el, index) => {
       return Number(delNumber) === index+1
@@ -218,7 +225,6 @@ const Board = () => {
       //     console.error(err);
       //   })
     }
-    setImage("");
   }
 
   const next = snapshot => {
@@ -259,10 +265,7 @@ const Board = () => {
             onChange={event=>setInputText(event.target.value)}
           />
           <div className={styles.store_btn}>
-            {isEdit ?
-              <Button isLink={false} label='更新' variant="contained" color="primary" onClick={()=>storeToBoard()} /> :
-              <Button isLink={false} label='投稿' variant="contained" color="primary" onClick={()=>storeToBoard()} />
-            }
+            <Button isLink={false} label='投稿' variant="contained" color="primary" onClick={()=>storeToBoard()} />
           </div>
         </div>
         <div className={styles.text_and_btn}>
@@ -303,7 +306,7 @@ const Board = () => {
       </div>
 
       <div>
-        <input type='file' accept="image/*" onChange={handleChangeFile} />
+        <input type='file' accept="image/*, video/mp4" onChange={handleChangeFile} />
         <Button isLink={false} label='アップロード' variant="contained" color="primary" onClick={()=>sendFile()} />
       </div>
 
