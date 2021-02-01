@@ -63,4 +63,19 @@ class BoardsController extends Controller
     $users = Users::all();
     return response()->json($users);
   }
+
+  public function new_user(Request $request) {
+    $user_id = substr(bin2hex(random_bytes(8)), 0, 8);
+    $urltoken = substr(bin2hex(random_bytes(48)), 0, 48);
+    $time = date("Y-m-d H:i:s");
+    return response()->json(Users::create([
+      'user_id'=> $user_id,
+      'isTemporary'=> 1,
+      'name'=> $request->input('name'),
+      'password'=> $request->input('password'),
+      'time_temporary'=> $time,
+      'urltoken'=> $urltoken
+    ]));
+  }
+
 }

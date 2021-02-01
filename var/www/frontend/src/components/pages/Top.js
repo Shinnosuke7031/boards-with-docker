@@ -37,7 +37,7 @@ const Top = () => {
     axios.get(users_url)
     .then(res => res.data)
     .then(data => {
-      // console.log(data)
+      console.log(data)
       // console.log(login_check(data, userID, pass));
       return login_check(data, userID, pass);
     })

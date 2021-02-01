@@ -6,6 +6,7 @@ import Top from './pages/Top';
 import Board from './pages/Board';
 import styles from './index.module.css';
 import Signup from './pages/Signup';
+import SignupComplete from './pages/SinupComplete';
 
 
 const Index = () => {
@@ -25,9 +26,11 @@ const Routers = () => {
         <div className={styles.container}>
           <Switch>
             <Route exact path={'/boards'} component={Board} />
+            <Route exact path={'/signup'} component={Signup} />
+            <Route exact path='/signup-complete' component={SignupComplete} />
+              {/* <Route path={'/:token'} children /> */}
             <Index />
             {/* <Route exact path={'/'} component={Top} /> */}
-            <Route exact path={'/signup'} component={Signup} />
           </Switch>
         </div>
       </Router>

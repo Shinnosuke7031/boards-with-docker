@@ -36,5 +36,6 @@ module.exports = {
     hot: true,
     open: true,
     historyApiFallback: true,
-	},
+  },
+  devtool: "eval-source-map",
 };

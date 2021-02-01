@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class Users extends Model
 {
   protected $table = 'users'; 
-  
+  protected $fillable = ['user_id', 'name', 'isTemporary', 'password', 'urltoken', 'time_temporary'];
 }
