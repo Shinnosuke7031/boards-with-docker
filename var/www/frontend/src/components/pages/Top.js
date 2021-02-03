@@ -6,7 +6,7 @@ import styles from './index.module.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const users_url = 'http://localhost:8080/api/v1/users';
+const urlBase = 'http://localhost:8080/api/v1/';
 const headers = {
   "Content-type": "application/json",
   responseType: 'json'  
@@ -34,29 +34,28 @@ const Top = () => {
   
 
   const loginClick = () => {
-    axios.get(users_url)
-    .then(res => res.data)
-    .then(data => {
-      console.log(data)
-      // console.log(login_check(data, userID, pass));
-      return login_check(data, userID, pass);
-    })
-    .then(res => {
-
-      if (res['isLogin']) {// パスワード一致
-        dispatch({
-          type: 'CHANGE_NAME',
-          payload: res['name']
-        })
-        dispatch({
-          type: 'CHANGE_ISLOGIN',
-          payload: res['isLogin']
-        })
-      } else {// Alert Error
-        setIsError(true);
-      }
-    })
-    .catch(err => console.error(err));
+    const loginInfo = {
+      userID: userID,
+      pass: pass
+    }
+    axios
+      .post(urlBase + 'users/login', loginInfo)
+      .then(res => res.data)
+      .then(res => {
+        if (res['status'] === 'OK') {// パスワード一致
+          dispatch({
+            type: 'CHANGE_NAME',
+            payload: res['name']
+          })
+          dispatch({
+            type: 'CHANGE_ISLOGIN',
+            payload: true
+          })
+        } else {// Alert Error
+          setIsError(true);
+        }
+      })
+      .catch(err => console.error(err));
   }
 
   return (

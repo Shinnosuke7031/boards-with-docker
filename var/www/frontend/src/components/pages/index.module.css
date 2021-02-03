@@ -54,3 +54,10 @@
   display: flex;
   align-items: center;
 }
+
+.user_info {
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+  width: 100%;
+}

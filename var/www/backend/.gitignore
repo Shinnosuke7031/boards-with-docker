@@ -3,4 +3,9 @@
 Homestead.json
 Homestead.yaml
 .env
+.env_honban_mail
 .phpunit.result.cache
+
+define.php
+/app/Define.php
+/config/mail.php

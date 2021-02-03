@@ -28,8 +28,6 @@ const Signup = () => {
     if (email === '' || pass === '' || passRe === '' || pass !== passRe) {
       setIsError(true);
     } else {
-      const time = new Date().toLocaleString();
-      console.log("koko");
       setIsBtnClicked(true);
 
       const userInfo = {
@@ -41,9 +39,6 @@ const Signup = () => {
       axios.post(urlBase + 'users/new', userInfo)
            .then(res => console.log(res))
            .catch(err => console.error(err));
-
-      
-
       // console.log(userInfo);
 
     }
@@ -67,41 +62,43 @@ const Signup = () => {
       
       <h1 className={styles.title}>新規登録</h1>
 
-      <form className={styles.login_form} noValidate autoComplete="off">
-      {/* <div className={styles.login_form}> */}
-        <TextField 
-          id="standard-required" 
-          label="メールアドレス" 
-          type='email'
-          onChange={handleChangeEmail}
-        />
-        <TextField 
-          id="standard-name-required" 
-          label="名前" 
-          type='text'
-          onChange={event=>setName(event.target.value)}
-        />
-        <TextField
-          id="standard-password-input"
-          label="パスワード"
-          type="password"
-          autoComplete="current-password"
-          onChange={handleChangePass}
-        />
-        <TextField
-          id="standard-password-input"
-          label="パスワード（確認）"
-          type="password"
-          autoComplete="current-password"
-          onChange={handleChangePassRe}
+      {!isBtnClicked && <form className={styles.login_form} noValidate autoComplete="off">
+        {/* <div className={styles.login_form}> */}
+          <TextField 
+            id="standard-required" 
+            label="メールアドレス" 
+            type='email'
+            onChange={handleChangeEmail}
           />
-        <div className={styles.login_btn}>
-          <Button isLink={false} label='登録する' variant="contained" color="primary" onClick={()=>signupClick()} />
-          {/* <Button isLink={true} to={'/boards'} label='ログイン' variant="contained" color="primary" onClick={()=>loginClick()} /> */}
-        </div>    
-      {/* </div> */}
-        {isError && <p className={styles.altError}>メールアドレスとパスワードは正しく入力して下さい</p>}
-      </form>
+          <TextField 
+            id="standard-name-required" 
+            label="名前" 
+            type='text'
+            onChange={event=>setName(event.target.value)}
+          />
+          <TextField
+            id="standard-password-input"
+            label="パスワード"
+            type="password"
+            autoComplete="current-password"
+            onChange={handleChangePass}
+          />
+          <TextField
+            id="standard-password-input"
+            label="パスワード（確認）"
+            type="password"
+            autoComplete="current-password"
+            onChange={handleChangePassRe}
+            />
+          <div className={styles.login_btn}>
+            <Button isLink={false} label='登録する' variant="contained" color="primary" onClick={()=>signupClick()} />
+            {/* <Button isLink={true} to={'/boards'} label='ログイン' variant="contained" color="primary" onClick={()=>loginClick()} /> */}
+          </div>    
+        {/* </div> */}
+          {isError && <p className={styles.altError}>メールアドレスとパスワードは正しく入力して下さい</p>}
+      </form>}
+
+      {isBtnClicked && <p>入力されたメールアドレスに、本登録完了メールを送信しました。</p>}
 
     </div>
   );

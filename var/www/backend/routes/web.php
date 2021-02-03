@@ -30,5 +30,7 @@ $router->group(['prefix' => 'api/v1'], function() use ($router)
   $router->post('upload', 'BoardsController@upload'); 
   //ユーザー情報
   $router->get('users', 'BoardsController@users');
+  $router->post('users/login', 'BoardsController@login');
   $router->post('users/new', 'BoardsController@new_user');
+  $router->post('users/new/check', 'BoardsController@tokenCheck');
 });
