@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+
+  frontend:
+    container_name: app
+    build: ./Docker/react
+    ports:
+      - 3100:3000
+    volumes:
+      - "./var/www/:/www"
+    working_dir: /www/frontend
+    command: "npm start"
+    stdin_open: true # https://teratail.com/questions/249875
+
+  backend:
+    container_name: php
+    build: ./Docker/php
+    volumes:
+      - ./var/www/backend:/var/www/backend
+    working_dir: /var/www/backend
+    links:
+      - mysql
+    environment:
+      DB_PORT: 3306
+      DB_HOST: mysql
+      DB_DATABASE: coco
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    # depends_on:
+    #   - mysql
+
+  nginx:
+    image: nginx
+    container_name: web
+    volumes:
+      - ./Docker/nginx/conf/default.conf:/etc/nginx/conf.d/default.conf
+      - ./var/www/backend/public:/var/www/backend/public
+    ports:
+      - 8080:80
+    links:
+      - backend
+    # depends_on:
+    #   - backend
+
+  mysql:
+    build: ./Docker/mysql
+    container_name: db
+    environment:
+      MYSQL_DATABASE: coco
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./Docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./Docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./Docker/mysql/mysql_data:/var/lib/mysql
+    ports:
+    - 13300:3306
+
+  nginxfront:
+    image: nginx
+    container_name: web_app
+    volumes:
+      - ./Docker/nginx_front/conf/default.conf:/etc/nginx/conf.d/default.conf
+      - ./var/www/frontend/dist:/var/www/
+    ports:
+      - 8000:800
+    links:
+      - frontend
+    depends_on:
+      - frontend
