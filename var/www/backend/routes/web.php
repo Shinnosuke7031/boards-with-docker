@@ -21,16 +21,43 @@ $router->get('hello', function () use ($router) {
 
 $router->group(['prefix' => 'api/v1'], function() use ($router)
 {
+  $router->post('auth/login', 'BoardsController@authenticate');
   //掲示板情報
   $router->get('boards', 'BoardsController@index');
   $router->get('boards/{id}', 'BoardsController@showById');
   $router->post('store', 'BoardsController@store');
   $router->post('delete/{id}', 'BoardsController@delete'); 
-  $router->post('update', 'BoardsController@update'); 
-  $router->post('upload', 'BoardsController@upload'); 
+  $router->post('update', 'BoardsController@update');
   //ユーザー情報
-  $router->get('users', 'BoardsController@users');
-  $router->post('users/login', 'BoardsController@login');
+  // $router->get('users', 'BoardsController@users');
+  $router->post('users/logout', 'BoardsController@logout');
   $router->post('users/new', 'BoardsController@new_user');
   $router->post('users/new/check', 'BoardsController@tokenCheck');
 });
+
+$router->group(
+  ['prefix' => 'api/v2', 'middleware' => 'jwt.auth'],
+  function () use ($router) {
+      $router->post('user', 'BoardsController@userInfo');
+  }
+);
+
+// $router->get('/test', function (\Illuminate\Http\Request $request) {
+
+//   $counter = $request->session()->get('counter') ?: 0;
+//   $request->session()->put('counter', ++$counter);
+
+//   return response()->json([
+//       'session.counter' => $request->session()->get('counter')
+//   ]);
+// });
+
+// $router->get('/test100', function (\Illuminate\Http\Request $request) {
+
+//   $counter = $request->session()->get('counter') ?: 0;
+//   $request->session()->put('counter', $counter+=100);
+
+//   return response()->json([
+//       'session.counter' => $request->session()->get('counter')
+//   ]);
+// });

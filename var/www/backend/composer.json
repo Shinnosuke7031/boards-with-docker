@@ -8,6 +8,7 @@
         "php": "^7.3|^8.0",
         "illuminate/mail": "^8.25",
         "laravel/lumen-framework": "^8.0",
+        "lcobucci/jwt": "3.2",
         "phanan/cascading-config": "~2.0",
         "phpmailer/phpmailer": "^6.2"
     },

@@ -6,6 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '../parts/Button';
 import { SiteContext } from '../Routers';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+const urlBase = 'http://localhost:8080/api/v1/';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,11 +31,24 @@ const Haeader = () => {
   const classes = useStyles();
   const {state, dispatch} = useContext(SiteContext);
 
+  useEffect(()=>{
+    console.log(state)
+  }, [state])
+
   const handleClick = () => {
-    dispatch({
-      type: 'CHANGE_ISLOGIN',
-      payload: false
-    });
+    axios
+      .post(urlBase + 'users/logout', [], {
+        withCredentials: true
+      })
+      .then(res=>{
+        console.log(res);
+        dispatch({
+          type: 'CHANGE_ISLOGIN',
+          payload: false
+        });
+      })
+      .catch(err=>console.error(err));
+
   };
 
   return (

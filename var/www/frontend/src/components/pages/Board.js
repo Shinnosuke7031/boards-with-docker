@@ -30,7 +30,7 @@ const Board = () => {
     })
 
     axios.get(urlBase + 'boards')
-      .then(res => {setData(res.data); console.log(res)})
+      .then(res => setData(res.data))
       .catch(err => {
         setData([]);
         console.error(err);
@@ -57,12 +57,10 @@ const Board = () => {
       axios.post(urlBase + 'store', storeData)
            .then(res=>{
              setIsLoading(false);
-             console.log(res);
              setImageUrl('');
            })
            .catch(err=>{
              setIsLoading(false);
-             console.error(err);
              setImageUrl('');
            })
 
@@ -204,26 +202,7 @@ const Board = () => {
         next,
         error,
         complete
-        );
-        
-      // axios
-      //   .post( 
-      //           urlBase + 'upload',
-      //           params,
-      //           {
-      //             headers: {
-      //               'content-type': 'multipart/form-data',
-      //             }
-      //           }
-      //         )
-      //   .then(res=>{
-      //     setIsLoading(false)
-      //     console.log(res)
-      //   })
-      //   .catch(err=>{
-      //     setIsLoading(false);
-      //     console.error(err);
-      //   })
+      );
     }
   }
 

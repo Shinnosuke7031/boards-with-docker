@@ -9,3 +9,4 @@ Homestead.yaml
 define.php
 /app/Define.php
 /config/mail.php
+/storage/framework/sessions/*

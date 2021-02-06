@@ -6,9 +6,11 @@ use Illuminate\Support\Facades\DB;
 use App\Boards;
 use App\Users;
 use App\Define;
-use phpDocumentor\Reflection\DocBlock\Tags\Uses;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
 use PHPMailer\PHPMailer;
+use Symfony\Component\HttpFoundation\Cookie;
 
 class BoardsController extends Controller
 {
@@ -43,38 +45,14 @@ class BoardsController extends Controller
     return response()->json($res);
   }
 
-  public function upload () {
-    /*
-      return response()->json(Boards::create(
-        [
-          'user_id' => $_POST["user_id"],
-          'name' => $_POST["name"],
-          'comment'=>'not text',
-          'isFile'=>$isFile,
-          'time'=>$time,
-          'fname'=>$_FILES["file"]["name"],
-          'extension'=>$extension,
-          'raw_data'=>$raw_data,
-        ]
-      ));
-    }*/
-    return response()->json(['file'=>$_FILES["file"], "user_id"=>$_POST["user_id"], "name"=>$_POST["name"]], 200, array('Content-Type'=>'application/json; charset=utf-8' ));
-
-  }
-
-
   public function users() {
     $users = Users::all();
     return response()->json($users);
   }
 
-  public function login(Request $request) {
-    $data = Users::where('user_id', $request->input('userID'))->first();
-    if ($data['password'] == $request->input('pass')) {
-      return response()->json(['status'=>'OK', 'name'=>$data['name']]);
-    }
-    
-    return response()->json(['status'=>'Error']);
+  public function logout(Request $request) {
+    $request->cookie('token');
+    return response()->json()->withCookie(new Cookie('token', 'none'));;
   }
 
   public function new_user(Request $request) {
@@ -136,6 +114,42 @@ class BoardsController extends Controller
     } else {
       return response()->json(['data'=>[], 'status'=>'Error']);
     }
+  }
+
+  // JWTによる認証 //
+
+  private function jwt(Users $users){
+    $signer = new Sha256();
+    $token = (new Builder())->setIssuer('http://localhost:8080')
+        ->setAudience('http://localhost:8080')
+        ->setId(uniqid(), true)
+        ->setIssuedAt(time())
+        ->setNotBefore(time() + 60)
+        ->setExpiration(time() + 3600)
+        ->set('user_id', $users->user_id)
+        ->sign($signer, env('JWT_SECRET'))
+        ->getToken();
+    return $token;
+  }
+  public function authenticate(Request $request) {
+    $this->validate($request, [
+        'userID'    => 'required',
+        'pass' => 'required'
+    ]);
+    $users = Users::where('user_id', $request->input('userID'))->first();
+    if (!$users) {
+        return response()->json(['error' => 'ログインできませんでした(E1)。'], 400);
+    }
+    if ($request->input('pass') == $users['password']) {
+        return response()->json(['token'=>$this->jwt($users)->__toString(), "status"=>'OK', 'name'=>$users['name']], 200)
+                         ->withCookie(new Cookie('token', $this->jwt($users)->__toString()));
+    }
+    return response()->json(['error' => 'ログインできませんでした(E2)。'], 400);
+  }
+
+  public function userinfo(Request $request){
+    $user = Users::where('user_id', $request->user)->first();
+    return response()->json(['userID'=>$user['user_id'], 'name'=>$user['name']]);
   }
 
 }

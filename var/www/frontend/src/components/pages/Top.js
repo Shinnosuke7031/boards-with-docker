@@ -6,7 +6,8 @@ import styles from './index.module.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const urlBase = 'http://localhost:8080/api/v1/';
+const urlBase_v1 = 'http://localhost:8080/api/v1/';
+const urlBase_v2 = 'http://localhost:8080/api/v2/';
 const headers = {
   "Content-type": "application/json",
   responseType: 'json'  
@@ -20,15 +21,38 @@ const Top = () => {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
+
     dispatch({
       type: 'CHANGE_PAGE',
       payload: 'Top'
     })
 
-    dispatch({
-      type: 'CHANGE_ISLOGIN',
-      payload: false
-    })
+    axios
+      .post(urlBase_v2 + 'user', [], {
+        withCredentials: true
+      })
+      .then(res=>{
+        dispatch({
+          type: 'CHANGE_NAME',
+          payload: res.data['name']
+        })
+        dispatch({
+          type: 'CHANGE_ID',
+          payload: res.data['userID']
+        })
+        dispatch({
+          type: 'CHANGE_ISLOGIN',
+          payload: true
+        })
+
+      })
+      .catch(err=>{
+        dispatch({
+          type: 'CHANGE_ISLOGIN',
+          payload: false
+        })
+      });
+
   }, []);
 
   
@@ -39,7 +63,10 @@ const Top = () => {
       pass: pass
     }
     axios
-      .post(urlBase + 'users/login', loginInfo)
+      // .post(urlBase_v1 + 'users/login', loginInfo, {
+      .post(urlBase_v1 + 'auth/login', loginInfo, {
+        withCredentials: true
+      })
       .then(res => res.data)
       .then(res => {
         if (res['status'] === 'OK') {// パスワード一致

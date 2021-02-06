@@ -6,7 +6,7 @@ require_once __DIR__.'/../vendor/autoload.php';
     dirname(__DIR__)
 ))->bootstrap();
 
-date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
+date_default_timezone_set(env('APP_TIMEZONE', 'Asia/Tokyo'));
 
 /*
 |--------------------------------------------------------------------------
@@ -126,5 +126,27 @@ $app->middleware([
 $app->register(Illuminate\Mail\MailServiceProvider::class);
 $app->configure('mail');
 
+$app->routeMiddleware([
+    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
+]);
+
+// $app->singleton(Illuminate\Session\SessionManager::class, function ($app) {
+//     return $app->loadComponent('session', Illuminate\Session\SessionServiceProvider::class, 'session');
+// });
+
+// $app->singleton('session.store', function ($app) {
+//     return $app->loadComponent('session', Illuminate\Session\SessionServiceProvider::class, 'session.store');
+// });
+
+
+// $app->middleware([
+//      \Illuminate\Session\Middleware\StartSession::class,
+// ]);
+
+$app->singleton('cookie', function () use ($app) {
+    return $app->loadComponent('session', 'Illuminate\Cookie\CookieServiceProvider', 'cookie');
+});
+
+$app->bind('Illuminate\Contracts\Cookie\QueueingFactory', 'cookie');
 
 return $app;
