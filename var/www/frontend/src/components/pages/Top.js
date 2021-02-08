@@ -5,6 +5,7 @@ import { SiteContext } from '../Routers';
 import styles from './index.module.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useMediaQuery } from "react-responsive";
 
 const urlBase_v1 = 'http://localhost:8080/api/v1/';
 const urlBase_v2 = 'http://localhost:8080/api/v2/';
@@ -19,6 +20,8 @@ const Top = () => {
   const [userID, setUserID] = useState('');
   const [pass, setPass] = useState('');
   const [isError, setIsError] = useState(false);
+
+  const isMobileScreen = useMediaQuery({ query: '(max-width: 560px)'})
 
   useEffect(() => {
 
@@ -86,10 +89,9 @@ const Top = () => {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={isMobileScreen ? styles.container_mob : styles.container}>
       
       <form className={styles.login_form} noValidate autoComplete="off">
-      {/* <div className={styles.login_form}> */}
         <TextField 
           id="standard-required" 
           label="ID" 
@@ -109,9 +111,7 @@ const Top = () => {
           />
         <div className={styles.login_btn}>
           <Button isLink={false} label='ログイン' variant="contained" color="primary" onClick={()=>loginClick()} />
-          {/* <Button isLink={true} to={'/boards'} label='ログイン' variant="contained" color="primary" onClick={()=>loginClick()} /> */}
         </div>    
-      {/* </div> */}
         {isError && <p className={styles.altError}>IDもしくはパスワードが間違っています</p>}
       </form>
 

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { Switch, Route, BrowserRouter as Router, Redirect } from 'react-router-dom';
+import { useMediaQuery } from "react-responsive";
 
 import Header from './organisms/Header';
 import Top from './pages/Top';
@@ -19,11 +20,12 @@ const Index = () => {
 }
 
 const Routers = () => {
+  const isMobileScreen = useMediaQuery({ query: '(max-width: 560px)'})
   return(
     <SiteProvider>
       <Router>
         <Header />
-        <div className={styles.container}>
+        <div className={isMobileScreen ? styles.container_mob : styles.container}>
           <Switch>
             <Route exact path={'/boards'} component={Board} />
             <Route exact path={'/signup'} component={Signup} />
