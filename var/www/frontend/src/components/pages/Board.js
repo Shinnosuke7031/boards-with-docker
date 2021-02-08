@@ -9,6 +9,7 @@ import axios from 'axios';
 import firebase, { storage } from "../../../firebase/firebase";
 
 const urlBase = 'http://localhost:8080/api/v1/';
+const urlBase_v2 = 'http://localhost:8080/api/v2/';
 
 const Board = () => {
   const { state, dispatch } = useContext(SiteContext);
@@ -19,7 +20,7 @@ const Board = () => {
   const [delNumber, setDelNumber] = useState('');
   const [editNumber, setEditNumber] = useState('');
   const [editText, setEditText] = useState('');
-  const [isLoading, setIsLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [image, setImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
@@ -28,13 +29,42 @@ const Board = () => {
       type: 'CHANGE_PAGE',
       payload: 'Board'
     })
-
-    axios.get(urlBase + 'boards')
-      .then(res => setData(res.data))
+    //------- jwt認証 --------//
+    axios
+    .post(urlBase_v2 + 'user', [], {
+      withCredentials: true
+    })
+    .then(res=>{
+      dispatch({
+        type: 'CHANGE_NAME',
+        payload: res.data['name']
+      })
+      dispatch({
+        type: 'CHANGE_ID',
+        payload: res.data['userID']
+      })
+      dispatch({
+        type: 'CHANGE_ISLOGIN',
+        payload: true
+      })
+    })
+    .catch(err=>{
+      dispatch({
+        type: 'CHANGE_ISLOGIN',
+        payload: false
+      })
+    });
+    //------- 掲示板情報の取得 --------//
+    axios
+      .get(urlBase + 'boards')
+      .then(res => {
+        setData(res.data);
+        setIsLoading(false);
+      })
       .catch(err => {
         setData([]);
         console.error(err);
-      })
+      });
   }, []);
 
   useEffect(() => {
@@ -56,11 +86,9 @@ const Board = () => {
       setImage("");
       axios.post(urlBase + 'store', storeData)
            .then(res=>{
-             setIsLoading(false);
              setImageUrl('');
            })
            .catch(err=>{
-             setIsLoading(false);
              setImageUrl('');
            })
 
@@ -190,7 +218,6 @@ const Board = () => {
   }
 
   const sendFile = () => {
-    setIsLoading(true);
     if (image === "") {
       console.log("ファイルが選択されていません");
     } else {
@@ -230,12 +257,11 @@ const Board = () => {
   };
 
   return (
-    state.isLogin ?
     <div className={`${styles.container} ${styles.container_board}`}>
       
       <h1 className={styles.title}>掲示板</h1>
 
-      <form className={styles.login_form} noValidate autoComplete="off">
+      {!isLoading && state.isLogin && <form className={styles.login_form} noValidate autoComplete="off">
         <div className={styles.text_and_btn}>
           <TextField 
             id="standard-required" 
@@ -259,11 +285,11 @@ const Board = () => {
             <Button isLink={false} label='削除' variant="contained" color="primary" onClick={()=>deleteID()} />  
           </div>
         </div>
-      </form>
+      </form>}
 
       <br />
 
-      <div className={styles.text_and_btn}>
+     {!isLoading && state.isLogin && <div className={styles.text_and_btn}>
         <TextField
           label="コメント番号"
           type="number"
@@ -278,22 +304,23 @@ const Board = () => {
         />
         <p style={{width: '20px'}}></p>
         <Button isLink={false} label='編集する' variant="contained" color="primary" onClick={()=>editID()} />
-      </div>
+      </div>}
 
-      <div className={styles.text_and_btn}>
+      {!isLoading && state.isLogin && <div className={styles.text_and_btn}>
         <Button isLink={false} label='更新' variant="contained" color="primary" onClick={()=>updateData()} />
-      </div>
+      </div>}
 
-      <div>
+      {!isLoading && state.isLogin && <div>
         <input type='file' accept="image/*, video/mp4" onChange={handleChangeFile} />
         <Button isLink={false} label='アップロード' variant="contained" color="primary" onClick={()=>sendFile()} />
-      </div>
+      </div>}
 
+      {!isLoading && state.isLogin && <BoardData data={data} />}
 
-      <BoardData data={data} />
-    </div> :
-    <div className={`${styles.container}`}>
-      <Link to='/'>こちら</Link>からログインしてください
+      {!isLoading && !state.isLogin && <div className={`${styles.container}`}>
+        <Link to='/'>こちら</Link>からログインしてください
+      </div>}
+      {isLoading && <div className={styles.loader}></div>}
     </div>
   );
 };
