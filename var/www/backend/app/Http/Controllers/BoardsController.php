@@ -61,7 +61,7 @@ class BoardsController extends Controller
     $time = date("Y-m-d H:i:s");
     $emailAddress = $request->input('email');
 
-    $url = 'http://localhost:3000/signup-complete?token=' . $urltoken;
+    $url = 'http://localhost:3100/signup-complete?token=' . $urltoken;
     $message = "ココスペースインターン掲示板に仮登録ありがとうございます。\r\n以下のURLをクリックして本登録を完了してください。\r\n" . $url;
     $title = "[ココスペース インターン 掲示板]仮登録が完了しました";
 

@@ -29,7 +29,7 @@ $router->group(['prefix' => 'api/v1'], function() use ($router)
   $router->post('delete/{id}', 'BoardsController@delete'); 
   $router->post('update', 'BoardsController@update');
   //ユーザー情報
-  // $router->get('users', 'BoardsController@users');
+  $router->get('users', 'BoardsController@users');
   $router->post('users/logout', 'BoardsController@logout');
   $router->post('users/new', 'BoardsController@new_user');
   $router->post('users/new/check', 'BoardsController@tokenCheck');

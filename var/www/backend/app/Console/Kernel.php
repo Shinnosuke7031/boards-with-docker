@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        // ここに作成したコマンドクラスを追記していく。
+        \App\Console\Commands\MyScript::class,
     ];
 
     /**
@@ -24,6 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+        // ここに実行させたいコマンドクラスのシグネチャを記す。
+        $schedule->command('my_script_signature')->cron('*/1 * * * *');
     }
 }
