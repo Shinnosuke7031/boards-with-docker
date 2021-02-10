@@ -15,7 +15,6 @@ const Board = () => {
   const { state, dispatch } = useContext(SiteContext);
 
   const [inputText, setInputText] = useState('');
-  const [isEdit, setIsEdit] = useState(false);
   const [data, setData] = useState([]);
   const [delNumber, setDelNumber] = useState('');
   const [editNumber, setEditNumber] = useState('');
@@ -261,6 +260,7 @@ const Board = () => {
       
       <h1 className={styles.title}>掲示板</h1>
 
+      {/* 投稿と削除のフォーム */}
       {!isLoading && state.isLogin && <form className={styles.login_form} noValidate autoComplete="off">
         <div className={styles.text_and_btn}>
           <TextField 
@@ -289,7 +289,8 @@ const Board = () => {
 
       <br />
 
-     {!isLoading && state.isLogin && <div className={styles.text_and_btn}>
+      {/* 編集のフォーム */}
+      {!isLoading && state.isLogin && <div className={styles.text_and_btn}>
         <TextField
           label="コメント番号"
           type="number"
@@ -306,15 +307,18 @@ const Board = () => {
         <Button isLink={false} label='編集する' variant="contained" color="primary" onClick={()=>editID()} />
       </div>}
 
+      {/* 掲示板の更新ボタン */}
       {!isLoading && state.isLogin && <div className={styles.text_and_btn}>
         <Button isLink={false} label='更新' variant="contained" color="primary" onClick={()=>updateData()} />
       </div>}
 
+      {/* 画像・動画のフォーム */}
       {!isLoading && state.isLogin && <div>
         <input type='file' accept="image/*, video/mp4" onChange={handleChangeFile} />
         <Button isLink={false} label='アップロード' variant="contained" color="primary" onClick={()=>sendFile()} />
       </div>}
 
+      {/* 掲示板 */}
       {!isLoading && state.isLogin && <BoardData data={data} />}
 
       {!isLoading && !state.isLogin && <div className={`${styles.container}`}>
