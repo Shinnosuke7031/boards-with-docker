@@ -21,7 +21,7 @@ $router->get('hello', function () use ($router) {
 
 $router->group(['prefix' => 'api/v1'], function() use ($router)
 {
-  $router->post('auth/login', 'BoardsController@authenticate');
+  $router->post('auth/login', 'UsersController@authenticate');
   //掲示板情報
   $router->get('boards', 'BoardsController@index');
   $router->get('boards/{id}', 'BoardsController@showById');
@@ -29,16 +29,16 @@ $router->group(['prefix' => 'api/v1'], function() use ($router)
   $router->post('delete/{id}', 'BoardsController@delete'); 
   $router->post('update', 'BoardsController@update');
   //ユーザー情報
-  $router->get('users', 'BoardsController@users');
-  $router->post('users/logout', 'BoardsController@logout');
-  $router->post('users/new', 'BoardsController@new_user');
-  $router->post('users/new/check', 'BoardsController@tokenCheck');
+  $router->get('users', 'UsersController@users');
+  $router->post('users/logout', 'UsersController@logout');
+  $router->post('users/new', 'UsersController@new_user');
+  $router->post('users/new/check', 'UsersController@tokenCheck');
 });
 
 $router->group(
   ['prefix' => 'api/v2', 'middleware' => 'jwt.auth'],
   function () use ($router) {
-      $router->post('user', 'BoardsController@userInfo');
+      $router->post('user', 'UsersController@userInfo');
   }
 );
 
