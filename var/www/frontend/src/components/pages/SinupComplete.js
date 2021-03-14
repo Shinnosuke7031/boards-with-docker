@@ -4,7 +4,7 @@ import { SiteContext } from '../Routers';
 import styles from './index.module.css';
 import axios from 'axios';
 
-const urlBase = 'http://localhost:8080/api/v1/';
+const urlBase = 'http://ec2-54-250-181-91.ap-northeast-1.compute.amazonaws.com:8080/api/v1/';
 
 const SignupComplete = (props) => {
   const { state, dispatch } = useContext(SiteContext);

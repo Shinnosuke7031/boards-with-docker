@@ -7,8 +7,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useMediaQuery } from "react-responsive";
 
-const urlBase_v1 = 'http://localhost:8080/api/v1/';
-const urlBase_v2 = 'http://localhost:8080/api/v2/';
+const urlBase_v1 = 'http://ec2-54-250-181-91.ap-northeast-1.compute.amazonaws.com:8080/api/v1/';
+const urlBase_v2 = 'http://ec2-54-250-181-91.ap-northeast-1.compute.amazonaws.com:8080/api/v2/';
 const headers = {
   "Content-type": "application/json",
   responseType: 'json'  

@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import firebase, { storage } from "../../../firebase/firebase";
 
-const urlBase = 'http://localhost:8080/api/v1/';
-const urlBase_v2 = 'http://localhost:8080/api/v2/';
+const urlBase = 'http://ec2-54-250-181-91.ap-northeast-1.compute.amazonaws.com:8080/api/v1/';
+const urlBase_v2 = 'http://ec2-54-250-181-91.ap-northeast-1.compute.amazonaws.com:8080/api/v2/';
 
 const Board = () => {
   const { state, dispatch } = useContext(SiteContext);

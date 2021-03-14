@@ -7,7 +7,7 @@ import Button from '../parts/Button';
 import { SiteContext } from '../Routers';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-const urlBase = 'http://localhost:8080/api/v1/';
+const urlBase = 'http://ec2-54-250-181-91.ap-northeast-1.compute.amazonaws.com:8080/api/v1/';
 
 const useStyles = makeStyles((theme) => ({
   root: {
